@@ -19,6 +19,8 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 
 	public static final String DRONE_ROUTE_FILE_PREFIX = "in";
 	public static final String TXT_FILE_POSFIX = ".txt";
+	public static final String DRONE_OUTPUT_FILE_PREFIX = "out";
+
 
 
 	private FileReader reader;
@@ -32,10 +34,10 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 		List<Dron> drones = new ArrayList<>();
 		List<String> inputRoutes = processInputFileNames(maxDronCount);
 		inputRoutes.stream().forEach(routesPath -> {
-			String input = "input/" + routesPath;
-			String output = "output/" + routesPath;
+			String input = "deliveryData/input/" + routesPath;
+			String output = "deliveryData/output/" + routesPath.replace(DRONE_ROUTE_FILE_PREFIX, DRONE_OUTPUT_FILE_PREFIX);
 			try {
-				Dron dron = new Dron(reader.readFile(routesPath));
+				Dron dron = new Dron(reader.readFile(input));
 				dron.getRoutes().forEach(route -> {
 					Position delivery = deliveryService.followRoute(dron.getCurrentPosition(), route);
 					dron.getDeliveries().add(new Position(delivery.getX(), delivery.getY(), delivery.getDirection()));
