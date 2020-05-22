@@ -1,6 +1,7 @@
-package com.s4n.service;
+package com.s4n.service.impl;
 
 import com.s4n.domain.Position;
+import com.s4n.service.DeliveryService;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.s4n.domain.Direction.*;
@@ -13,13 +14,13 @@ public class DeliveryServiceImpl implements DeliveryService {
 	public Position followRoute(Position currentPosition, String route) {
 		route.chars().forEach(ch -> {
 			switch (ch) {
-				case 68:
+				case 'D':
 					turnRight(currentPosition); //Derecha
 					break;
-				case 73:
+				case 'I':
 					turnLeft(currentPosition); //Izquierda
 					break;
-				case 65:
+				case 'A':
 					advance(currentPosition); //Adelante
 					break;
 			}
@@ -27,22 +28,31 @@ public class DeliveryServiceImpl implements DeliveryService {
 		return currentPosition;
 	}
 
-	private void advance(Position position) {
-		switch (position.getDirection()) {
+	private void advance(Position currentPosition) {
+		switch (currentPosition.getDirection()) {
 			case NORTE:
-				position.setY(position.getY() + 1);
+				lockPositionAndMove(currentPosition.getX(), (currentPosition.getY() + 1), currentPosition);
 				break;
 			case SUR:
-				position.setY(position.getY() - 1);
+				lockPositionAndMove(currentPosition.getX(), (currentPosition.getY() - 1), currentPosition);
 				break;
 			case ORIENTE:
-				position.setX(position.getX() + 1);
+				lockPositionAndMove((currentPosition.getX() + 1), currentPosition.getY(), currentPosition);
 				break;
 			case OCCIDENTE:
-				position.setX(position.getX() - 1);
+				lockPositionAndMove((currentPosition.getX() - 1), currentPosition.getY(), currentPosition);
 				break;
 		}
 	}
+
+	private void lockPositionAndMove(int x, int y, Position currentPosition) {
+		String gridPositionLock = "Position:" + x + "|" + y;
+		synchronized (gridPositionLock) {
+			currentPosition.setX(x);
+			currentPosition.setY(y);
+		}
+	}
+
 
 	private void turnRight(Position position) {
 		switch (position.getDirection()) {

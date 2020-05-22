@@ -1,38 +1,42 @@
 package com.s4n;
 
-import com.s4n.facade.DronDeliveryFacadeImpl;
-import com.s4n.io.DronReportWriter;
-import com.s4n.io.FileNameProvider;
+import com.s4n.facade.DronDeliveryFacade;
+import com.s4n.facade.impl.DronDeliveryFacadeImpl;
+import com.s4n.io.*;
 import com.s4n.io.impl.DronReportWriterImpl;
 import com.s4n.io.impl.FileNameProviderImpl;
-import com.s4n.io.impl.FileReader;
+import com.s4n.io.impl.FileReaderImpl;
 import com.s4n.service.DeliveryService;
-import com.s4n.service.DeliveryServiceImpl;
-import com.s4n.validation.DronValidatorImpl;
+import com.s4n.service.impl.DeliveryServiceImpl;
+import com.s4n.util.Configuration;
 import com.s4n.validation.RouteValidator;
+import com.s4n.validation.impl.RouteValidatorImpl;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
+@Slf4j
 public class DronDeliveryApp {
 
-	private final static int AVAILABLE_DRONES = 20;
+	private final static int AVAILABLE_DRONES = Integer.parseInt(Configuration.getProperty("dron.count"));
 
 	public static void main(String[] args) {
 
-		FileReader reader = new FileReader();
+		log.info("Applicacion de entregas con drones iniciada");
+		FileReader reader = new FileReaderImpl();
 		DronReportWriter reportWriter = new DronReportWriterImpl();
 		DeliveryService deliveryService = new DeliveryServiceImpl();
-		RouteValidator routeValidator = new DronValidatorImpl();
+		Executor threadPool = Executors.newFixedThreadPool(AVAILABLE_DRONES);
+		RouteValidator routeValidator = new RouteValidatorImpl();
 		FileNameProvider fileNameProvider = new FileNameProviderImpl();
 
-		DronDeliveryFacadeImpl facade = new DronDeliveryFacadeImpl(reader, deliveryService, AVAILABLE_DRONES,
-				reportWriter, routeValidator, fileNameProvider);
+		DronDeliveryFacade facade = new DronDeliveryFacadeImpl(reader, reportWriter, deliveryService, AVAILABLE_DRONES,
+				threadPool, routeValidator, fileNameProvider);
 
-
+		log.info("Iniciando entregas con drones");
 		facade.performDeliveries();
-
-	}
-
-	private void startComponents() {
+		log.info("Entregas con drones finalizadas");
 
 	}
 
