@@ -1,6 +1,7 @@
 package com.s4n.io.impl;
 
 import com.s4n.io.FileNameProvider;
+import com.s4n.util.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,13 @@ public class FileNameProviderImpl implements FileNameProvider {
 	}
 
 	@Override
-	public String provideInputPath(String path){
-		return  "deliveryData/input/" + path;
+	public String provideInputPath(String path) {
+		return Configuration.getProperty("dron.input.data.path") + path;
 	}
 
 	@Override
-	public String provideOutputPath(String path){
-		return  "deliveryData/output/"
+	public String provideOutputPath(String path) {
+		return Configuration.getProperty("dron.output.data.path")
 				+ path.replace(DRONE_ROUTE_FILE_PREFIX, DRONE_OUTPUT_FILE_PREFIX);
 	}
 

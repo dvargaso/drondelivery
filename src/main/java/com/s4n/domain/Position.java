@@ -5,17 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Position
-{
+public class Position {
 	private int x;
 	private int y;
 	private Direction direction;
 
-
-	public String getGridPosition() {
-		return "Position{" +
-				"x=" + x +
-				", y=" + y +
-				'}';
-	}
 }

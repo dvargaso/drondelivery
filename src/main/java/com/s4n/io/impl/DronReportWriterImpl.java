@@ -27,7 +27,7 @@ public class DronReportWriterImpl implements DronReportWriter {
 					writer.write("\n(" + delivery.getX() + ", " + delivery.getY() + ") dirección "
 							+ delivery.getDirection().toString());
 				}
-				if(!StringUtils.isEmpty(message)){
+				if (!StringUtils.isEmpty(message)) {
 					writer.write(message);
 				}
 			}

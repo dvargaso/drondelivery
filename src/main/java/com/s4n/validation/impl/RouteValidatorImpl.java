@@ -1,5 +1,6 @@
-package com.s4n.validation;
+package com.s4n.validation.impl;
 
+import com.s4n.validation.RouteValidator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.regex.Pattern;
@@ -7,7 +8,7 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 
 @Slf4j
-public class DronValidatorImpl implements RouteValidator {
+public class RouteValidatorImpl implements RouteValidator {
 
 	private static final Pattern ROUTE_PATTERN = Pattern.compile("[A|a|D|d|I|i]+");
 
