@@ -3,16 +3,18 @@ package com.s4n.facade;
 import com.s4n.domain.Dron;
 import com.s4n.domain.Position;
 import com.s4n.io.DronReportWriter;
-import com.s4n.io.FileReader;
+import com.s4n.io.FileNameProvider;
+import com.s4n.io.impl.FileReader;
 import com.s4n.service.DeliveryService;
 import com.s4n.validation.RouteValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+
+import static java.lang.String.format;
 
 @Slf4j
 @AllArgsConstructor
@@ -23,51 +25,62 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 	public static final String DRONE_OUTPUT_FILE_PREFIX = "out";
 
 
-
 	private FileReader reader;
 	private DeliveryService deliveryService;
-	private int maxDronCount;
+	private int dronCount;
 	private DronReportWriter reportWriter;
 	private RouteValidator routeValidator;
+	private FileNameProvider fileNameProvider;
 
 
 	@Override
-	public List<Dron> performDeliveries() {
-		List<Dron> drones = new ArrayList<>();
-		List<String> inputRoutes = processInputFileNames(maxDronCount);
+	public void performDeliveries() {
+
+		List<String> inputRoutes = filterRoutesByAvailableDrones(fileNameProvider.resolveInputFileNames(dronCount));
 		inputRoutes.stream().forEach(routesPath -> {
-			String input = "deliveryData/input/" + routesPath;
-			String output = "deliveryData/output/" + routesPath.replace(DRONE_ROUTE_FILE_PREFIX, DRONE_OUTPUT_FILE_PREFIX);
+			String input = fileNameProvider.provideInputPath(routesPath);
+			String output = fileNameProvider.provideOutputPath(routesPath);
+			List<Position> deliveries = null;
+
 			try {
 				Dron dron = new Dron(reader.readFile(input));
-				dron.getRoutes().forEach(route -> {
+				if (CollectionUtils.isEmpty(dron.getRoutes())) {
+					throw new IllegalArgumentException(format("El archivo %s no contiene rutas", input));
+				}
+
+				deliveries = dron.getDeliveries();
+				dron.getRoutes().stream().forEach(route -> {
 					routeValidator.validateRawRoute(route);
 					Position delivery = deliveryService.followRoute(dron.getCurrentPosition(), route);
+					checkDeliveryRange(delivery);
 					dron.getDeliveries().add(new Position(delivery.getX(), delivery.getY(), delivery.getDirection()));
 				});
-				reportWriter.writeToFile(output, dron.getDeliveries());
-				drones.add(dron);
-			} catch (IOException e) {
-				//TODO handle error
+
+				reportWriter.writeToFile(output, dron.getDeliveries(), null);
+
+			} catch (IOException ioe) {
+			} catch (IllegalArgumentException iae) {
+
 			}
-
-
 		});
 
-		return drones;
 
 	}
 
+	private void checkDeliveryRange(Position position) {
+		int range = 10;
+		if (position.getX() > range || position.getY() > range) {
+			throw new IllegalArgumentException(format("Fuera del rango de %s cuadras. No se puede entregar", range));
+		}
+	}
 
 
-	private List<String> processInputFileNames(int count) {
-		List<String> fileNameList = new ArrayList<>();
-		IntStream.rangeClosed(1, count).forEach(i -> {
-			String number = (i < 10) ? ("0" + i) : String.valueOf(i);
-			fileNameList.add(DRONE_ROUTE_FILE_PREFIX + number + TXT_FILE_POSFIX);
-		});
-
-		return fileNameList;
+	private List<String> filterRoutesByAvailableDrones(List<String> inputRoutes) {
+		if (inputRoutes.size() > dronCount) {
+			return inputRoutes.subList(0, dronCount - 1);
+		} else {
+			return inputRoutes;
+		}
 	}
 
 

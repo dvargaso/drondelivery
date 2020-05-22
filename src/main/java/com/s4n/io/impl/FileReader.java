@@ -1,4 +1,4 @@
-package com.s4n.io;
+package com.s4n.io.impl;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
