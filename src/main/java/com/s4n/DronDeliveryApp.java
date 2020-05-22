@@ -5,6 +5,8 @@ import com.s4n.io.DronReportWriter;
 import com.s4n.io.FileReader;
 import com.s4n.service.DeliveryService;
 import com.s4n.service.DeliveryServiceImpl;
+import com.s4n.validation.RouteValidator;
+import com.s4n.validation.DronValidatorImpl;
 
 
 public class DronDeliveryApp {
@@ -16,9 +18,10 @@ public class DronDeliveryApp {
 		FileReader reader = new FileReader();
 		DronReportWriter reportWriter = new DronReportWriter();
 		DeliveryService deliveryService = new DeliveryServiceImpl();
+		RouteValidator routeValidator = new DronValidatorImpl();
 
 		DronDeliveryFacadeImpl facade = new DronDeliveryFacadeImpl(reader, deliveryService, AVAILABLE_DRONES,
-				reportWriter);
+				reportWriter, routeValidator);
 
 
 		facade.performDeliveries();
