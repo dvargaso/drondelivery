@@ -1,5 +1,6 @@
 package com.s4n.validation;
 
+import com.s4n.validation.impl.RouteValidatorImpl;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

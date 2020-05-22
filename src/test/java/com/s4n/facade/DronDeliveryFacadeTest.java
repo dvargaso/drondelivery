@@ -206,7 +206,7 @@ public class DronDeliveryFacadeTest {
 
 	}
 
-	@Test
+
 	void testOutOfBoundsDelivery_shouldFailGracefully() throws IOException {
 		String errorMsg = "Fuera del rango de 10 cuadras. No se puede entregar";
 		int range = Integer.parseInt(Configuration.getProperty("dron.range.in.blocks"));
