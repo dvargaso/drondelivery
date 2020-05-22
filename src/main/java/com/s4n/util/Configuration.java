@@ -11,6 +11,10 @@ import static java.lang.Thread.currentThread;
 
 @Slf4j
 @Data
+
+/**
+ * Utility class for loading the app initial configuration
+ */
 public class Configuration {
 
 	private static Properties properties;

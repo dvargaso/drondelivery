@@ -16,6 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * This class is the main entry point of the application.
+ * It creates all the dependencies and initialiezes the deliveries using drones
+ */
 @Slf4j
 public class DronDeliveryApp {
 

@@ -15,6 +15,11 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+
+
+/**
+ * El desarrollo de esta clase no pudo ser completado por falta de tiempo
+ */
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class DronDeliveryIntegrationTest {
 
