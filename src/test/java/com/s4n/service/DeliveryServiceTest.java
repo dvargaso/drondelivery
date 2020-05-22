@@ -1,7 +1,9 @@
+package com.s4n.service;
+
 import com.s4n.domain.Dron;
 import com.s4n.domain.Position;
-import com.s4n.service.DeliveryService;
-import com.s4n.service.DeliveryServiceImpl;
+import com.s4n.factory.DronFactory;
+import com.s4n.service.impl.DeliveryServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -32,7 +34,7 @@ public class DeliveryServiceTest {
 	@Test
 	void testHappyPathWithS4nSampleData() {
 		//Arrange
-		Dron dron = new Dron(asList("AAAAIAA", "DDDAIAD", "AAIADAD"));
+		Dron dron = DronFactory.createNewDron(asList("AAAAIAA", "DDDAIAD", "AAIADAD"));
 
 		Position expectedDelivery1 = new Position(-2, 4, OCCIDENTE);
 		Position expectedDelivery2 = new Position(-1, 3, SUR);
@@ -46,7 +48,7 @@ public class DeliveryServiceTest {
 
 	@Test
 	void testTurnRight() {
-		Dron dron = new Dron(asList("D", "D", "D", "D"));
+		Dron dron = DronFactory.createNewDron(asList("D", "D", "D", "D"));
 		Position expectedDelivery1 = new Position(0, 0, ORIENTE);
 		Position expectedDelivery2 = new Position(0, 0, SUR);
 		Position expectedDelivery3 = new Position(0, 0, OCCIDENTE);
@@ -60,7 +62,7 @@ public class DeliveryServiceTest {
 
 	@Test
 	void testTurnLeft() {
-		Dron dron = new Dron(asList("I", "I", "I", "I"));
+		Dron dron = DronFactory.createNewDron(asList("I", "I", "I", "I"));
 		Position expectedDelivery1 = new Position(0, 0, OCCIDENTE);
 		Position expectedDelivery2 = new Position(0, 0, SUR);
 		Position expectedDelivery3 = new Position(0, 0, ORIENTE);
@@ -74,7 +76,7 @@ public class DeliveryServiceTest {
 
 	@Test
 	void testAdvanceNorth() {
-		Dron dron = new Dron(asList("A"));
+		Dron dron = DronFactory.createNewDron(asList("A"));
 		//"DA", "DDA", "DDDA", "DDDDA
 		Position expectedDelivery1 = new Position(0, 1, NORTE);
 
@@ -85,7 +87,7 @@ public class DeliveryServiceTest {
 
 	@Test
 	void testAdvanceSouth() {
-		Dron dron = new Dron(asList("DA"));
+		Dron dron = DronFactory.createNewDron(asList("DA"));
 		Position expectedDelivery1 = new Position(1, 0, ORIENTE);
 
 		//Act && Assert
@@ -95,7 +97,7 @@ public class DeliveryServiceTest {
 
 	@Test
 	void testAdvanceEast() {
-		Dron dron = new Dron(asList("DDA"));
+		Dron dron = DronFactory.createNewDron(asList("DDA"));
 		Position expectedDelivery1 = new Position(0, -1, SUR);
 
 		//Act && Assert
@@ -105,7 +107,7 @@ public class DeliveryServiceTest {
 
 	@Test
 	void testAdvanceWest() {
-		Dron dron = new Dron(asList("DDDA"));
+		Dron dron = DronFactory.createNewDron(asList("DDDA"));
 		Position expectedDelivery1 = new Position(-1, 0, OCCIDENTE);
 
 		//Act && Assert
@@ -124,4 +126,6 @@ public class DeliveryServiceTest {
 			);
 		});
 	}
+
+	//TODO drone crash test
 }
