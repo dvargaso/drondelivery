@@ -1,0 +1,4 @@
+== Reporte de entregas ==
+(-1, 1) dirección OCCIDENTE
+(-1, -1) dirección SUR
+(-1, 0) dirección NORTE

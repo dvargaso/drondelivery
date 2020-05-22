@@ -1,0 +1,2 @@
+
+El archivo deliveryData/input/in13.txt no contiene rutas
