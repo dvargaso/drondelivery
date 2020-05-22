@@ -4,12 +4,12 @@ import com.s4n.domain.Dron;
 import com.s4n.domain.Position;
 import com.s4n.facade.impl.DronDeliveryFacadeImpl;
 import com.s4n.factory.DronFactory;
-import com.s4n.io.FileNameProvider;
 import com.s4n.io.FileReader;
 import com.s4n.io.impl.DronReportWriterImpl;
+import com.s4n.io.FileNameProvider;
 import com.s4n.service.DeliveryService;
 import com.s4n.util.Configuration;
-import com.s4n.validation.impl.RouteValidatorImpl;
+import com.s4n.validation.RouteValidator;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,7 @@ import java.util.concurrent.Executors;
 import static com.s4n.domain.Direction.NORTE;
 import static com.s4n.domain.Direction.ORIENTE;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +44,7 @@ public class DronDeliveryFacadeTest {
 	private DeliveryService deliveryService;
 
 	@Mock
-	private RouteValidatorImpl dronValidator;
+	private RouteValidator dronValidator;
 
 	@Mock
 	private FileNameProvider fileNameProvider;
@@ -185,6 +184,12 @@ public class DronDeliveryFacadeTest {
 
 		executeAndWait();
 
+//		verify(fileNameProvider).resolveInputFileNames(dronCount);
+//		verify(fileNameProvider, times(dronCount)).provideInputPath(fileNameCaptor.capture());
+//		assertEquals(inputPath1, fileNameCaptor.getValue());
+//		verify(fileNameProvider, times(dronCount)).provideOutputPath(inputPathCaptor.capture());
+//		assertEquals(inputPath1, inputPathCaptor.getValue());
+
 		assertBasicPaths();
 
 		verify(reportWriter, times(dronCount)).writeToFile(outputPath1, null, errorMsg);
@@ -206,11 +211,11 @@ public class DronDeliveryFacadeTest {
 
 	}
 
-
+	@Test
 	void testOutOfBoundsDelivery_shouldFailGracefully() throws IOException {
 		String errorMsg = "Fuera del rango de 10 cuadras. No se puede entregar";
-		int range = Integer.parseInt(Configuration.getProperty("dron.range.in.blocks"));
-		String routeToOutOFBounds = "OutOfBounds";
+		int range = 10;
+		String routeToOutOFBounds = "AAAAAAAAAA";
 
 
 		Position outOfBoundsPosition = new Position(0, (range + 1), NORTE);
