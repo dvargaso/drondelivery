@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 
 
@@ -52,7 +53,13 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 		List<Position> deliveries = null;
 
 		try {
-			Dron dron =  DronFactory.createNewDron(reader.readFile(input));
+			List<String> dronRoutes = reader.readFile(input);
+			int dronCapacity = parseInt(Configuration.getProperty("dron.capacity"));
+			if(dronRoutes.size() > dronCapacity){
+				log.warn("El dron solo tiene capacidad para {} entregas. Las demas seran ignoradas",dronCapacity);
+				dronRoutes = dronRoutes.subList(0, dronCapacity -1);
+			}
+			Dron dron =  DronFactory.createNewDron(dronRoutes);
 			if (CollectionUtils.isEmpty(dron.getRoutes())) {
 				throw new IllegalArgumentException(format("El archivo %s no contiene rutas", input));
 			}
@@ -79,7 +86,7 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 	}
 
 	private void checkDeliveryRange(Position position) {
-		int range = Integer.parseInt(Configuration.getProperty("dron.range.in.blocks"));
+		int range = parseInt(Configuration.getProperty("dron.range.in.blocks"));
 		if (position.getX() > range || position.getY() > range) {
 			throw new IllegalArgumentException(format("Fuera del rango de %s cuadras. No se puede entregar", range));
 		}
