@@ -5,6 +5,7 @@ import com.s4n.domain.Position;
 import com.s4n.io.DronReportWriter;
 import com.s4n.io.FileReader;
 import com.s4n.service.DeliveryService;
+import com.s4n.validation.RouteValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +28,7 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 	private DeliveryService deliveryService;
 	private int maxDronCount;
 	private DronReportWriter reportWriter;
+	private RouteValidator routeValidator;
 
 
 	@Override
@@ -39,6 +41,7 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 			try {
 				Dron dron = new Dron(reader.readFile(input));
 				dron.getRoutes().forEach(route -> {
+					routeValidator.validateRawRoute(route);
 					Position delivery = deliveryService.followRoute(dron.getCurrentPosition(), route);
 					dron.getDeliveries().add(new Position(delivery.getX(), delivery.getY(), delivery.getDirection()));
 				});
