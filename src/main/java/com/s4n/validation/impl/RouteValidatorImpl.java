@@ -14,7 +14,7 @@ public class RouteValidatorImpl implements RouteValidator {
 
 	@Override
 	public void validateRawRoute(String row) throws IllegalArgumentException {
-		if (!ROUTE_PATTERN.matcher(row).matches()) {
+		if (!ROUTE_PATTERN.matcher(row.trim()).matches()) {
 			String errorMsg = format("La ruta %s no cumple con el formato esperado", row);
 			log.warn(errorMsg);
 			throw new IllegalArgumentException(errorMsg);

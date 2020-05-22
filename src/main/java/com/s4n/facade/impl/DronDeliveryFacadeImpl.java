@@ -67,7 +67,7 @@ public class DronDeliveryFacadeImpl implements DronDeliveryFacade {
 			deliveries = dron.getDeliveries();
 			dron.getRoutes().stream().forEach(route -> {
 				routeValidator.validateRawRoute(route);
-				Position delivery = deliveryService.followRoute(dron.getCurrentPosition(), route);
+				Position delivery = deliveryService.followRoute(dron.getCurrentPosition(), route.trim().toUpperCase());
 				checkDeliveryRange(delivery);
 				dron.getDeliveries().add(new Position(delivery.getX(), delivery.getY(), delivery.getDirection()));
 			});
